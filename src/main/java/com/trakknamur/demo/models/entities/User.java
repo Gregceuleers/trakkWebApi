@@ -1,7 +1,6 @@
 package com.trakknamur.demo.models.entities;
 
-import lombok.AccessLevel;
-import lombok.Data;
+import lombok.*;
 import lombok.experimental.FieldDefaults;
 import org.springframework.boot.context.properties.bind.DefaultValue;
 import org.springframework.security.core.GrantedAuthority;
@@ -18,6 +17,9 @@ import java.util.stream.Collectors;
 @Table(name = "trakk_user")
 @Data
 @FieldDefaults(level = AccessLevel.PRIVATE)
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class User implements UserDetails {
 
     @Id
@@ -33,16 +35,16 @@ public class User implements UserDetails {
     @ElementCollection(fetch = FetchType.EAGER)
     List<String> roles = new ArrayList<>();
 
-    @Column(name = "account_non_expired", columnDefinition = "BOOLEAN DEFAULT TRUE")
+    @Column(name = "account_non_expired")
     boolean isAccountNonExpired;
 
-    @Column(name = "account_non_locked" , columnDefinition = "BOOLEAN DEFAULT TRUE")
+    @Column(name = "account_non_locked")
     boolean isAccountNonLocked;
 
-    @Column(name = "credentials_non_expired", columnDefinition = "BOOLEAN DEFAULT TRUE")
+    @Column(name = "credentials_non_expired")
     boolean isCredentialsNonExpired;
 
-    @Column(name = "enabled", columnDefinition = "BOOLEAN DEFAULT TRUE")
+    @Column(name = "enabled")
     boolean isEnabled;
 
     @Override

@@ -1,6 +1,7 @@
 package com.trakknamur.demo.services.impl;
 
 
+import com.trakknamur.demo.models.entities.User;
 import com.trakknamur.demo.repositories.UserRepository;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -21,5 +22,10 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         return this.userRepository
                 .findByUsername(s)
                 .orElseThrow(() -> new UsernameNotFoundException("L'utilisateur avec le nom : " + s + " n'existe pas"));
+    }
+
+    public String insert(User u) {
+        User user = this.userRepository.save(u);
+        return user.getUsername();
     }
 }

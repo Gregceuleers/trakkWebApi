@@ -1,17 +1,21 @@
 package com.trakknamur.demo.init;
 
+import com.trakknamur.demo.configs.PasswordEncoderConfig;
 import com.trakknamur.demo.models.dtos.ParcoursDTO;
+import com.trakknamur.demo.models.entities.User;
 import com.trakknamur.demo.models.enums.TypeParcours;
 import com.trakknamur.demo.models.enums.TypeTrou;
 import com.trakknamur.demo.models.forms.ParcoursForm;
 import com.trakknamur.demo.models.forms.TrouForm;
 import com.trakknamur.demo.services.ParcoursService;
 import com.trakknamur.demo.services.TrouService;
+import com.trakknamur.demo.services.impl.UserDetailsServiceImpl;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.stereotype.Component;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 @Slf4j
@@ -22,9 +26,15 @@ public class DatabaseInit implements InitializingBean {
 
     private final TrouService trouService;
 
-    public DatabaseInit(ParcoursService parcoursService, TrouService trouService) {
+    private final PasswordEncoderConfig passwordEncoder;
+
+    private final UserDetailsServiceImpl userDetailsService;
+
+    public DatabaseInit(ParcoursService parcoursService, TrouService trouService, PasswordEncoderConfig passwordEncoder, UserDetailsServiceImpl userDetailsService) {
         this.parcoursService = parcoursService;
         this.trouService = trouService;
+        this.passwordEncoder = passwordEncoder;
+        this.userDetailsService = userDetailsService;
     }
 
     @Override
@@ -34,6 +44,34 @@ public class DatabaseInit implements InitializingBean {
 
         log.info("CHARGEMENT DES UTILISATEURS");
 
+        List<User> users = Arrays.asList(
+                User.builder()
+                        .username("greg")
+                        .password(passwordEncoder.getPasswordEncoder().encode("1234"))
+                        .roles(Collections.singletonList(
+                                "USER"
+                        ))
+                        .isAccountNonExpired(true)
+                        .isAccountNonLocked(true)
+                        .isCredentialsNonExpired(true)
+                        .isEnabled(true)
+                        .build(),
+                User.builder()
+                        .username("admin")
+                        .password(passwordEncoder.getPasswordEncoder().encode("1234"))
+                        .roles(Arrays.asList(
+                                "USER", "ADMIN"
+                        ))
+                        .isAccountNonExpired(true)
+                        .isAccountNonLocked(true)
+                        .isCredentialsNonExpired(true)
+                        .isEnabled(true)
+                        .build()
+                );
+
+        users.forEach(this.userDetailsService::insert);
+
+        log.info("CHARGEMENT DES PARCOURS");
 
 
         List<ParcoursForm> list = Arrays.asList(
@@ -55,6 +93,9 @@ public class DatabaseInit implements InitializingBean {
         );
 
         list.forEach(this.parcoursService::insert);
+
+        log.info("CHARGEMENT DES TROUS");
+
 
         // Récupérer la liste des parcours fraichement créée
         List<ParcoursDTO> parcours = this.parcoursService.getAll();
@@ -78,15 +119,14 @@ public class DatabaseInit implements InitializingBean {
                         .build()
         );
 
-            trouFormList0.forEach(trouForm -> {
-                        try {
-                            this.trouService.insert(trouForm);
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
+        trouFormList0.forEach(trouForm -> {
+                    try {
+                        this.trouService.insert(trouForm);
+                    } catch (Exception e) {
+                        e.printStackTrace();
                     }
-            );
-
+                }
+        );
 
 
         // Affectations des trous pour le parcours 1
@@ -167,7 +207,7 @@ public class DatabaseInit implements InitializingBean {
                         .distance(400)
                         .idParcours(parcours.get(2).getId())
                         .build()
-                        );
+        );
 
         trouFormList2.forEach(trouForm -> {
             try {
