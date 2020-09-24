@@ -2,7 +2,6 @@ package com.trakknamur.demo.models.entities;
 
 import lombok.*;
 import lombok.experimental.FieldDefaults;
-import org.springframework.boot.context.properties.bind.DefaultValue;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;

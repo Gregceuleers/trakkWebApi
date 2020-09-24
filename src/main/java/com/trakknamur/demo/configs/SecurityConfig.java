@@ -2,6 +2,7 @@ package com.trakknamur.demo.configs;
 
 import com.trakknamur.demo.services.impl.UserDetailsServiceImpl;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -21,7 +22,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
 
+        // Chargement des utilisateurs depuis la DB
+
         auth.userDetailsService(this.userDetailsService);
+
+        // Chargement en mémoire d'utilisateurs hardcodés
 
 //        PasswordEncoder encoder =
 //                PasswordEncoderFactories.createDelegatingPasswordEncoder();
@@ -44,6 +49,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .httpBasic()
                 .and()
                 .authorizeRequests()
+                .antMatchers("/parcours/**").hasAnyAuthority("USER", "ADMIN")
                 .antMatchers("/parcours/**").hasAuthority("ADMIN")
                 .antMatchers("/trous/**").hasAnyAuthority("USER", "ADMIN")
                 .antMatchers("/h2-console/**").permitAll()
