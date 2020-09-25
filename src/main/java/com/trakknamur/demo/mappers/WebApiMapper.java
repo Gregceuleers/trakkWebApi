@@ -8,6 +8,7 @@ import com.trakknamur.demo.models.entities.Trou;
 import com.trakknamur.demo.models.entities.User;
 import com.trakknamur.demo.models.forms.ParcoursForm;
 import com.trakknamur.demo.models.forms.TrouForm;
+import com.trakknamur.demo.models.forms.UserForm;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Mappings;
@@ -62,6 +63,23 @@ public interface WebApiMapper {
 
     @Mappings({})
     UserDTO toDto(User user);
+
+    @Mappings({
+            @Mapping(target = "authorities", ignore = true)
+    })
+    User toEntity(UserDTO dto);
+
+    @Mappings({
+            @Mapping(target = "idUser", ignore = true),
+            @Mapping(target = "accountNonExpired", ignore = true),
+            @Mapping(target = "accountNonLocked", ignore = true),
+            @Mapping(target = "credentialsNonExpired", ignore = true),
+            @Mapping(target = "enabled", ignore = true),
+            @Mapping(target = "authorities", ignore = true)
+    })
+    User fromFormToEntity(UserForm form);
+
+
 
 
 }
