@@ -4,6 +4,7 @@ package com.trakknamur.demo.services.impl;
 import com.trakknamur.demo.configs.PasswordEncoderConfig;
 import com.trakknamur.demo.mappers.WebApiMapper;
 import com.trakknamur.demo.models.dtos.UserDTO;
+import com.trakknamur.demo.models.entities.Parcours;
 import com.trakknamur.demo.models.entities.User;
 import com.trakknamur.demo.models.forms.UserForm;
 import com.trakknamur.demo.repositories.UserRepository;
@@ -54,7 +55,8 @@ public class UserDetailsServiceImpl implements UserDetailsService, BaseService<U
 
     @Override
     public UserDTO getOne(Long id) {
-        return null;
+        return this.webApiMapper.toDto(this.userRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Utilisateur non trouvé")));
     }
 
     @Override
@@ -77,11 +79,23 @@ public class UserDetailsServiceImpl implements UserDetailsService, BaseService<U
 
     @Override
     public boolean delete(Long id) {
-        throw new NotYetImplementedException();
+
+        User userDelete = this.webApiMapper.toEntity(getOne(id));
+
+        this.userRepository.delete(userDelete);
+
+        return !this.userRepository.existsById(userDelete.getIdUser());
     }
 
     @Override
     public UserDTO update(UserForm form, Long id) {
-        return null;
+
+        User userUpdated = this.webApiMapper.toEntity(getOne(id));
+
+        userUpdated.setUsername(form.getUsername());
+        userUpdated.setPassword(this.passwordEncoder.getPasswordEncoder().encode(form.getPassword()));
+        userUpdated.setRoles(form.getRoles());
+
+        return this.webApiMapper.toDto(this.userRepository.save(userUpdated));
     }
 }

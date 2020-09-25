@@ -23,9 +23,25 @@ public class UserController {
         return ResponseEntity.ok(this.userDetailsService.getAll());
     }
 
+    @GetMapping(path = "/{id}")
+    public ResponseEntity<UserDTO> getOne(@PathVariable("id") Long id) {
+        return ResponseEntity.ok(this.userDetailsService.getOne(id));
+    }
+
     @PostMapping
     public ResponseEntity<Boolean> postUser(@RequestBody UserForm form) {
-        boolean validity = this.userDetailsService.insert(form);
-        return validity ? ResponseEntity.ok(true) : ResponseEntity.badRequest().body(false);
+        boolean inserted = this.userDetailsService.insert(form);
+        return inserted ? ResponseEntity.ok(true) : ResponseEntity.badRequest().body(false);
+    }
+
+    @PutMapping(path = "/{id}")
+    public ResponseEntity<UserDTO> updateUser(@RequestBody UserForm userForm, @PathVariable("id") Long id) {
+        return ResponseEntity.ok(this.userDetailsService.update(userForm, id));
+    }
+
+    @DeleteMapping(path = "/{id}")
+    public ResponseEntity<Boolean> deleteUser(@PathVariable("id") Long id) {
+        boolean deleted = this.userDetailsService.delete(id);
+        return deleted ? ResponseEntity.ok(true) : ResponseEntity.badRequest().body(false);
     }
 }
