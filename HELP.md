@@ -28,3 +28,16 @@ The following guides illustrate how to use some features concretely:
 * [Accessing Data with JPA](https://spring.io/guides/gs/accessing-data-jpa/)
 * [Accessing data with MySQL](https://spring.io/guides/gs/accessing-data-mysql/)
 
+### Sécurité
+Guideline pour gérer la sécurité dans Spring Boot
+
+* Créer une classe de configuration (@Configuration) qui vient définir comment la sécurité va être gérée
+* Elle doit étendre WebSecurityConfigurerAdapter et surcharger 2 méthodes (configure(HttpSecurity) et configure(AuthenticationManagerBuilder)
+* configure(HttpSecurity) --> la configuration de la sécurité
+* configure(AuthenticationManagerBuilder)  --> charger les utilisateurs du système
+* Utilisateur -> soit inMemory (dev et test rapides) soit gestion complète entitié User implements UserDetails + service + contrôleur sécurisé
+* Penser au CORS avec la création d'un Bean CorsConfigurationSource corsConfigurationSource()
+* Si vous utiliser un gestionnaire d'exception personnalisées, penser à définir le comportement des 401 (authenticationEntryPoint), des 403 (@ExceptionHandler(AccessDeniedException.class)), des 404 avec les deux clés dans application.yaml +  @ExceptionHandler(NoHandlerFoundException.class)
+####Possibilités de sécurisation
+* Directement dans HttpSecurity avec la définition des .antMatchers(verbe HTTP, ...urlPaterns).has(Any)Authority(...Authorities)
+* Via les méthodes ou class avec @PreAuthorize("hasAuthority('authority')) pour protéger les méthodes ou services (pour effectuer cette approche, il faut aussi créer une classe de configuration qui va étendre GlobalMethodSecurityConfiguration)
