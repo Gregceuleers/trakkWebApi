@@ -10,6 +10,7 @@ import com.trakknamur.demo.models.forms.UserForm;
 import com.trakknamur.demo.repositories.UserRepository;
 import com.trakknamur.demo.services.BaseService;
 import org.hibernate.cfg.NotYetImplementedException;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -49,6 +50,7 @@ public class UserDetailsServiceImpl implements UserDetailsService, BaseService<U
 //    }
 
     @Override
+    @PreAuthorize("hasAuthority('ADMIN')")
     public List<UserDTO> getAll() {
         return this.userRepository.findAll()
                 .stream()
@@ -57,12 +59,14 @@ public class UserDetailsServiceImpl implements UserDetailsService, BaseService<U
     }
 
     @Override
+    @PreAuthorize("hasAuthority('ADMIN')")
     public UserDTO getOne(Long id) {
         return this.webApiMapper.toDto(this.userRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Utilisateur non trouvé")));
     }
 
     @Override
+    @PreAuthorize("hasAuthority('ADMIN')")
     public boolean insert(UserForm form) {
 
         User uBeforeInserted = this.webApiMapper.fromFormToEntity(form);
@@ -81,6 +85,7 @@ public class UserDetailsServiceImpl implements UserDetailsService, BaseService<U
     }
 
     @Override
+    @PreAuthorize("hasAuthority('ADMIN')")
     public boolean delete(Long id) {
 
         User userDelete = this.webApiMapper.toEntity(getOne(id));
@@ -91,6 +96,7 @@ public class UserDetailsServiceImpl implements UserDetailsService, BaseService<U
     }
 
     @Override
+    @PreAuthorize("hasAuthority('ADMIN')")
     public UserDTO update(UserForm form, Long id) {
 
         User userUpdated = this.webApiMapper.toEntity(getOne(id));
@@ -102,6 +108,7 @@ public class UserDetailsServiceImpl implements UserDetailsService, BaseService<U
         return this.webApiMapper.toDto(this.userRepository.save(userUpdated));
     }
 
+    @PreAuthorize("hasAuthority('ADMIN')")
     public UserDTO updateAccess(Map<String, Object> updates, Long id) throws IllegalAccessException {
 
         User userUpdateAccess = this.webApiMapper.toEntity(getOne(id));

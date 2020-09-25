@@ -2,7 +2,6 @@ package com.trakknamur.demo.configs;
 
 import com.trakknamur.demo.services.impl.UserDetailsServiceImpl;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -49,16 +48,16 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .httpBasic()
                 .and()
                 .authorizeRequests()
-                .antMatchers(HttpMethod.POST,
-                        "/parcours/**",
-                        "/trous/**",
-                        "/users/**"
-                ).hasAuthority("ADMIN")
-                .antMatchers(HttpMethod.GET, "/users/**").hasAuthority("ADMIN")
-                .antMatchers("/trous/**").hasAnyAuthority("USER", "ADMIN")
+//                .antMatchers(HttpMethod.POST,
+//                        "/parcours/**",
+//                        "/trous/**",
+//                        "/users/**"
+//                ).hasAuthority("ADMIN")
                 .antMatchers("/h2-console/**").permitAll()
                 .anyRequest()
                 .authenticated()
+                .and()
+                .exceptionHandling()
                 .and()
                 .sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)

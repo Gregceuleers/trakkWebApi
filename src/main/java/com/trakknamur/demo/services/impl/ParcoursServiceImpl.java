@@ -13,6 +13,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -21,6 +22,7 @@ import java.util.stream.StreamSupport;
 
 @Slf4j
 @Service
+@PreAuthorize("hasAuthority('USER')")
 public class ParcoursServiceImpl implements ParcoursService {
 
     private final ParcoursRepository parcoursRepository;
@@ -45,12 +47,14 @@ public class ParcoursServiceImpl implements ParcoursService {
     }
 
     @Override
+    @PreAuthorize("hasAuthority('ADMIN')")
     public void insert(ParcoursForm p) {
 
         this.parcoursRepository.save(this.webApiMapper.fromFormToEntity(p));
     }
 
     @Override
+    @PreAuthorize("hasAuthority('ADMIN')")
     public ParcoursDTO insertWithReturnValue(ParcoursForm p) {
         return
                 this.webApiMapper.toDto(this.parcoursRepository.save(this.webApiMapper.fromFormToEntity(p)));

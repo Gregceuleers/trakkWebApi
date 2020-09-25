@@ -10,10 +10,12 @@ import lombok.extern.slf4j.Slf4j;
 import org.hibernate.cfg.NotYetImplementedException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.NoSuchElementException;
 
 @Slf4j
@@ -62,11 +64,28 @@ public class ControllerExceptionHandler {
                         .status(HttpStatus.NOT_IMPLEMENTED)
                         .body(new ErrorDTO(e.getMessage()));
             }
+//            if (e instanceof AccessDeniedException) {
+//                log.debug("Erreur gérée : " +  e.getClass() + " : " + e.getMessage());
+//                return ResponseEntity
+//                        .status(HttpStatus.FORBIDDEN)
+//                        .body(new ErrorDTO(e.getMessage()));
+//            }
         }
 
         return ResponseEntity
                 .status(HttpStatus.INTERNAL_SERVER_ERROR)
                 .body(new ErrorDTO("Une erreur inconnue s'est produite. Les développeurs ont été prévenus."));
+    }
+
+    @ExceptionHandler(AccessDeniedException.class)
+    public ResponseEntity<ErrorDTO> handle(AccessDeniedException e, HttpServletRequest request) {
+
+        log.debug(e.getClass().getSimpleName());
+
+        return ResponseEntity
+                .status(HttpStatus.FORBIDDEN)
+//                .contentType(new MediaType(MediaType.APPLICATION_JSON, StandardCharsets.UTF_8))
+                .body(new ErrorDTO(e.getMessage()));
     }
 
 }

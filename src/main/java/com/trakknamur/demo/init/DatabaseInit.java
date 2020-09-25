@@ -13,6 +13,10 @@ import com.trakknamur.demo.services.TrouService;
 import com.trakknamur.demo.services.impl.UserDetailsServiceImpl;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.InitializingBean;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
 import java.util.Arrays;
@@ -39,6 +43,15 @@ public class DatabaseInit implements InitializingBean {
     public void afterPropertiesSet() throws Exception {
 
         log.info("INITIALISATION DES DONNEES DE DEMARRAGE");
+
+        // Création d'un principal ADMIN pour l'initialisation des données (appel de la méthode protégée du service UserDetailsServiceImpl::insert)
+        UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
+                "admin_init", "1234", Arrays.asList(
+                        new SimpleGrantedAuthority("USER"),
+                        new SimpleGrantedAuthority("ADMIN"))
+        );
+        SecurityContext sc = SecurityContextHolder.getContext();
+        sc.setAuthentication(authenticationToken);
 
         log.info("CHARGEMENT DES UTILISATEURS");
 
@@ -206,6 +219,8 @@ public class DatabaseInit implements InitializingBean {
 //                e.printStackTrace();
             }
         });
+
+        SecurityContextHolder.clearContext();
 
     }
 }
