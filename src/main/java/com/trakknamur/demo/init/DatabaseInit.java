@@ -7,6 +7,7 @@ import com.trakknamur.demo.models.enums.TypeParcours;
 import com.trakknamur.demo.models.enums.TypeTrou;
 import com.trakknamur.demo.models.forms.ParcoursForm;
 import com.trakknamur.demo.models.forms.TrouForm;
+import com.trakknamur.demo.models.forms.UserForm;
 import com.trakknamur.demo.services.ParcoursService;
 import com.trakknamur.demo.services.TrouService;
 import com.trakknamur.demo.services.impl.UserDetailsServiceImpl;
@@ -44,28 +45,20 @@ public class DatabaseInit implements InitializingBean {
 
         log.info("CHARGEMENT DES UTILISATEURS");
 
-        List<User> users = Arrays.asList(
-                User.builder()
+        List<UserForm> users = Arrays.asList(
+                UserForm.builder()
                         .username("greg")
                         .password(passwordEncoder.getPasswordEncoder().encode("1234"))
                         .roles(Collections.singletonList(
                                 "USER"
                         ))
-                        .isAccountNonExpired(true)
-                        .isAccountNonLocked(true)
-                        .isCredentialsNonExpired(true)
-                        .isEnabled(true)
                         .build(),
-                User.builder()
+                UserForm.builder()
                         .username("admin")
                         .password(passwordEncoder.getPasswordEncoder().encode("1234"))
                         .roles(Arrays.asList(
                                 "USER", "ADMIN"
                         ))
-                        .isAccountNonExpired(true)
-                        .isAccountNonLocked(true)
-                        .isCredentialsNonExpired(true)
-                        .isEnabled(true)
                         .build()
                 );
 

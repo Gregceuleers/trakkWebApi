@@ -1,11 +1,13 @@
 package com.trakknamur.demo.services.impl;
 
 
+import com.trakknamur.demo.mappers.WebApiMapper;
 import com.trakknamur.demo.models.dtos.UserDTO;
 import com.trakknamur.demo.models.entities.User;
 import com.trakknamur.demo.models.forms.UserForm;
 import com.trakknamur.demo.repositories.UserRepository;
 import com.trakknamur.demo.services.BaseService;
+import org.hibernate.cfg.NotYetImplementedException;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -18,8 +20,11 @@ public class UserDetailsServiceImpl implements UserDetailsService, BaseService<U
 
     private final UserRepository userRepository;
 
-    public UserDetailsServiceImpl(UserRepository userRepository) {
+    private final WebApiMapper webApiMapper;
+
+    public UserDetailsServiceImpl(UserRepository userRepository, WebApiMapper webApiMapper) {
         this.userRepository = userRepository;
+        this.webApiMapper = webApiMapper;
     }
 
     @Override
@@ -29,10 +34,10 @@ public class UserDetailsServiceImpl implements UserDetailsService, BaseService<U
                 .orElseThrow(() -> new UsernameNotFoundException("L'utilisateur avec le nom : " + s + " n'existe pas"));
     }
 
-    public String insert(User u) {
-        User user = this.userRepository.save(u);
-        return user.getUsername();
-    }
+//    public String insert(User u) {
+//        User user = this.userRepository.save(u);
+//        return user.getUsername();
+//    }
 
     @Override
     public List<UserDTO> getAll() {
@@ -45,13 +50,23 @@ public class UserDetailsServiceImpl implements UserDetailsService, BaseService<U
     }
 
     @Override
-    public void insert(UserForm form) {
+    public boolean insert(UserForm form) {
+
+        User uBeforeInserted = this.webApiMapper.fromFormToEntity(form);
+        uBeforeInserted.setAccountNonExpired(true);
+        uBeforeInserted.setAccountNonLocked(true);
+        uBeforeInserted.setCredentialsNonExpired(true);
+        uBeforeInserted.setEnabled(true);
+
+        User uInserted = this.userRepository.save(uBeforeInserted);
+
+        return uInserted.getIdUser() > 0;
 
     }
 
     @Override
-    public void delete(Long id) {
-
+    public boolean delete(Long id) {
+        throw new NotYetImplementedException();
     }
 
     @Override

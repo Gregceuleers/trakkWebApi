@@ -7,6 +7,7 @@ package com.trakknamur.demo.exceptions;
 import com.trakknamur.demo.exceptions.models.ErrorDTO;
 import com.trakknamur.demo.exceptions.models.RuleGolfException;
 import lombok.extern.slf4j.Slf4j;
+import org.hibernate.cfg.NotYetImplementedException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -53,6 +54,12 @@ public class ControllerExceptionHandler {
                 log.debug("Erreur gérée : " +  e.getClass() + " : " + e.getMessage());
                 return ResponseEntity
                         .status(HttpStatus.NOT_FOUND)
+                        .body(new ErrorDTO(e.getMessage()));
+            }
+            if (e instanceof NotYetImplementedException) {
+                log.debug("Erreur gérée : " +  e.getClass() + " : " + e.getMessage());
+                return ResponseEntity
+                        .status(HttpStatus.NOT_IMPLEMENTED)
                         .body(new ErrorDTO(e.getMessage()));
             }
         }

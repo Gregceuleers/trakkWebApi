@@ -8,9 +8,9 @@ public interface BaseService<TDTO, TFORM, TID> {
 
     TDTO getOne(TID id);
 
-    void insert(TFORM form);
+    boolean insert(TFORM form);
 
-    void delete(TID id);
+    boolean delete(TID id);
 
     TDTO update(TFORM form, TID id);
 
