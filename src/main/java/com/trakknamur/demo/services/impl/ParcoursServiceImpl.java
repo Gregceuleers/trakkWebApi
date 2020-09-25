@@ -47,7 +47,7 @@ public class ParcoursServiceImpl implements ParcoursService {
     }
 
     @Override
-    @PreAuthorize("hasAuthority('ADMIN')")
+    @PreAuthorize("hasAnyAuthority('ADMIN', 'USER')")
     public void insert(ParcoursForm p) {
 
         this.parcoursRepository.save(this.webApiMapper.fromFormToEntity(p));
