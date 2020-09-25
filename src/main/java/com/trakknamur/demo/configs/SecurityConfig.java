@@ -49,8 +49,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .httpBasic()
                 .and()
                 .authorizeRequests()
-                .antMatchers("/parcours/**").hasAnyAuthority("USER", "ADMIN")
-                .antMatchers("/parcours/**").hasAuthority("ADMIN")
+                .antMatchers(HttpMethod.POST,
+                        "/parcours/**",
+                        "/trous/**",
+                        "/users/**"
+                ).hasAuthority("ADMIN")
                 .antMatchers("/trous/**").hasAnyAuthority("USER", "ADMIN")
                 .antMatchers("/h2-console/**").permitAll()
                 .anyRequest()

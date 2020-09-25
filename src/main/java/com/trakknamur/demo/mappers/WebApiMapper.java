@@ -2,8 +2,10 @@ package com.trakknamur.demo.mappers;
 
 import com.trakknamur.demo.models.dtos.ParcoursDTO;
 import com.trakknamur.demo.models.dtos.TrouDTO;
+import com.trakknamur.demo.models.dtos.UserDTO;
 import com.trakknamur.demo.models.entities.Parcours;
 import com.trakknamur.demo.models.entities.Trou;
+import com.trakknamur.demo.models.entities.User;
 import com.trakknamur.demo.models.forms.ParcoursForm;
 import com.trakknamur.demo.models.forms.TrouForm;
 import org.mapstruct.Mapper;
@@ -57,6 +59,9 @@ public interface WebApiMapper {
 
     })
     Parcours fromFormToEntity(ParcoursForm form);
+
+    @Mappings({})
+    UserDTO toDto(User user);
 
 
 }
