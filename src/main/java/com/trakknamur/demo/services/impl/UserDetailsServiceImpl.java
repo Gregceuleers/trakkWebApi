@@ -15,7 +15,10 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Component;
 
+import java.lang.reflect.Field;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Component
@@ -97,5 +100,27 @@ public class UserDetailsServiceImpl implements UserDetailsService, BaseService<U
         userUpdated.setRoles(form.getRoles());
 
         return this.webApiMapper.toDto(this.userRepository.save(userUpdated));
+    }
+
+    public UserDTO updateAccess(Map<String, Object> updates, Long id) throws IllegalAccessException {
+
+        User userUpdateAccess = this.webApiMapper.toEntity(getOne(id));
+
+        Class<?> clazz = userUpdateAccess.getClass();
+        Field[] fields = clazz.getDeclaredFields();
+
+        for(Map.Entry<String, Object> entry : updates.entrySet()) {
+            Field field = Arrays.stream(fields)
+                    .filter(f -> f.getName().equals(entry.getKey()))
+                    .findFirst()
+                    .orElseThrow(()->new IllegalArgumentException("Champ de la classe non trouvé"));
+            field.setAccessible(true);
+            field.set(userUpdateAccess, entry.getValue());
+        }
+
+        this.userRepository.save(userUpdateAccess);
+
+        return this.webApiMapper.toDto(userUpdateAccess);
+
     }
 }

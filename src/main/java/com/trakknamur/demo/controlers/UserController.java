@@ -7,6 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping(path = "/users")
@@ -43,5 +44,10 @@ public class UserController {
     public ResponseEntity<Boolean> deleteUser(@PathVariable("id") Long id) {
         boolean deleted = this.userDetailsService.delete(id);
         return deleted ? ResponseEntity.ok(true) : ResponseEntity.badRequest().body(false);
+    }
+
+    @PatchMapping(path = "/{id}")
+    public ResponseEntity<UserDTO> updateAccessPropertiesUser(@RequestBody Map<String, Object> updates, @PathVariable(name = "id") Long id) throws IllegalAccessException {
+        return ResponseEntity.ok(this.userDetailsService.updateAccess(updates, id));
     }
 }
