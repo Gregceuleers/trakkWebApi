@@ -54,6 +54,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                         "/trous/**",
                         "/users/**"
                 ).hasAuthority("ADMIN")
+                .antMatchers(HttpMethod.GET, "/users/**").hasAuthority("ADMIN")
                 .antMatchers("/trous/**").hasAnyAuthority("USER", "ADMIN")
                 .antMatchers("/h2-console/**").permitAll()
                 .anyRequest()

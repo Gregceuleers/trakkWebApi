@@ -27,14 +27,11 @@ public class DatabaseInit implements InitializingBean {
 
     private final TrouService trouService;
 
-    private final PasswordEncoderConfig passwordEncoder;
-
     private final UserDetailsServiceImpl userDetailsService;
 
-    public DatabaseInit(ParcoursService parcoursService, TrouService trouService, PasswordEncoderConfig passwordEncoder, UserDetailsServiceImpl userDetailsService) {
+    public DatabaseInit(ParcoursService parcoursService, TrouService trouService, UserDetailsServiceImpl userDetailsService) {
         this.parcoursService = parcoursService;
         this.trouService = trouService;
-        this.passwordEncoder = passwordEncoder;
         this.userDetailsService = userDetailsService;
     }
 
@@ -48,14 +45,14 @@ public class DatabaseInit implements InitializingBean {
         List<UserForm> users = Arrays.asList(
                 UserForm.builder()
                         .username("greg")
-                        .password(passwordEncoder.getPasswordEncoder().encode("1234"))
+                        .password("1234")
                         .roles(Collections.singletonList(
                                 "USER"
                         ))
                         .build(),
                 UserForm.builder()
                         .username("admin")
-                        .password(passwordEncoder.getPasswordEncoder().encode("1234"))
+                        .password("1234")
                         .roles(Arrays.asList(
                                 "USER", "ADMIN"
                         ))

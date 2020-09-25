@@ -1,6 +1,7 @@
 package com.trakknamur.demo.services.impl;
 
 
+import com.trakknamur.demo.configs.PasswordEncoderConfig;
 import com.trakknamur.demo.mappers.WebApiMapper;
 import com.trakknamur.demo.models.dtos.UserDTO;
 import com.trakknamur.demo.models.entities.User;
@@ -14,6 +15,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Component
 public class UserDetailsServiceImpl implements UserDetailsService, BaseService<UserDTO, UserForm, Long> {
@@ -22,9 +24,12 @@ public class UserDetailsServiceImpl implements UserDetailsService, BaseService<U
 
     private final WebApiMapper webApiMapper;
 
-    public UserDetailsServiceImpl(UserRepository userRepository, WebApiMapper webApiMapper) {
+    private final PasswordEncoderConfig passwordEncoder;
+
+    public UserDetailsServiceImpl(UserRepository userRepository, WebApiMapper webApiMapper, PasswordEncoderConfig passwordEncoder) {
         this.userRepository = userRepository;
         this.webApiMapper = webApiMapper;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @Override
@@ -41,7 +46,10 @@ public class UserDetailsServiceImpl implements UserDetailsService, BaseService<U
 
     @Override
     public List<UserDTO> getAll() {
-        return null;
+        return this.userRepository.findAll()
+                .stream()
+                .map(webApiMapper::toDto)
+                .collect(Collectors.toList());
     }
 
     @Override
@@ -57,6 +65,9 @@ public class UserDetailsServiceImpl implements UserDetailsService, BaseService<U
         uBeforeInserted.setAccountNonLocked(true);
         uBeforeInserted.setCredentialsNonExpired(true);
         uBeforeInserted.setEnabled(true);
+
+        // Cryptage du password
+        uBeforeInserted.setPassword(this.passwordEncoder.getPasswordEncoder().encode(uBeforeInserted.getPassword()));
 
         User uInserted = this.userRepository.save(uBeforeInserted);
 
