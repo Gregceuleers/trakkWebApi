@@ -3,6 +3,7 @@ package com.trakknamur.demo.controlers;
 import com.trakknamur.demo.models.dtos.UserDTO;
 import com.trakknamur.demo.models.forms.UserForm;
 import com.trakknamur.demo.services.impl.UserDetailsServiceImpl;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -12,6 +13,7 @@ import java.util.Map;
 
 @RestController
 @RequestMapping(path = "/users")
+@Slf4j
 public class UserController {
 
     private final UserDetailsServiceImpl userDetailsService;
@@ -50,5 +52,11 @@ public class UserController {
     @PatchMapping(path = "/{id}")
     public ResponseEntity<UserDTO> updateAccessPropertiesUser(@RequestBody Map<String, Object> updates, @PathVariable(name = "id") Long id) throws IllegalAccessException {
         return ResponseEntity.ok(this.userDetailsService.updateAccess(updates, id));
+    }
+
+    @PostMapping(path = "/auth")
+    public ResponseEntity<UserDTO> authenticate(@RequestBody UserForm form) {
+        log.info(form.toString());
+        return null;
     }
 }
