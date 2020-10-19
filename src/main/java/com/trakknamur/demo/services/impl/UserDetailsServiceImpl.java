@@ -2,12 +2,15 @@ package com.trakknamur.demo.services.impl;
 
 
 import com.trakknamur.demo.configs.PasswordEncoderConfig;
+import com.trakknamur.demo.exceptions.models.PasswordNotValidException;
 import com.trakknamur.demo.mappers.WebApiMapper;
 import com.trakknamur.demo.models.dtos.UserDTO;
 import com.trakknamur.demo.models.entities.User;
 import com.trakknamur.demo.models.forms.UserForm;
 import com.trakknamur.demo.repositories.UserRepository;
 import com.trakknamur.demo.services.BaseService;
+import io.jsonwebtoken.Jwts;
+import org.springframework.boot.autoconfigure.security.oauth2.resource.OAuth2ResourceServerProperties;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -126,6 +129,21 @@ public class UserDetailsServiceImpl implements UserDetailsService, BaseService<U
         this.userRepository.save(userUpdateAccess);
 
         return this.webApiMapper.toDto(userUpdateAccess);
+
+    }
+
+    public UserDTO checkAuthenticate(UserForm form) throws PasswordNotValidException {
+
+        User user = (User) this.loadUserByUsername(form.getUsername());
+
+
+
+        if (!passwordEncoder.getPasswordEncoder().matches(form.getPassword(), user.getPassword())) {
+            throw new PasswordNotValidException();
+        }
+
+        return this.webApiMapper.toDto(user);
+
 
     }
 }

@@ -4,6 +4,7 @@ import com.trakknamur.demo.models.dtos.UserDTO;
 import com.trakknamur.demo.models.forms.UserForm;
 import com.trakknamur.demo.services.impl.UserDetailsServiceImpl;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -55,8 +56,14 @@ public class UserController {
     }
 
     @PostMapping(path = "/auth")
-    public ResponseEntity<UserDTO> authenticate(@RequestBody UserForm form) {
+    public ResponseEntity<?> authenticate(@RequestBody UserForm form) {
         log.info(form.toString());
-        return null;
+        UserDTO userDTO = null;
+        try {
+            userDTO = this.userDetailsService.checkAuthenticate(form);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(e);
+        }
+        return ResponseEntity.ok(userDTO);
     }
 }
