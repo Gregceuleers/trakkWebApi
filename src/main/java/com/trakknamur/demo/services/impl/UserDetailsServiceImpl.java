@@ -146,4 +146,21 @@ public class UserDetailsServiceImpl implements UserDetailsService, BaseService<U
 
 
     }
+
+    public void signUp(UserForm user) {
+
+        User uBeforeInserted = this.webApiMapper.fromFormToEntity(user);
+        uBeforeInserted.setAccountNonExpired(true);
+        uBeforeInserted.setAccountNonLocked(true);
+        uBeforeInserted.setCredentialsNonExpired(true);
+        uBeforeInserted.setEnabled(true);
+
+        // Cryptage du password
+        uBeforeInserted.setPassword(this.passwordEncoder.getPasswordEncoder().encode(uBeforeInserted.getPassword()));
+
+        uBeforeInserted.setRoles(user.getRoles());
+
+        this.userRepository.save(uBeforeInserted);
+
+    }
 }

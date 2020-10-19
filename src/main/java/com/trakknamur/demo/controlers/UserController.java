@@ -66,4 +66,9 @@ public class UserController {
         }
         return ResponseEntity.ok(userDTO);
     }
+
+    @PostMapping(path = "/sign-up")
+    public void signUp(@RequestBody UserForm user) {
+        this.userDetailsService.signUp(user);
+    }
 }
